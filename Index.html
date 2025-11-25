@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Simulação de Investimento - Christian</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3f3ff;
+        color: #333;
+        text-align: center;
+        padding: 30px;
+    }
+
+    h1 {
+        color: #3b0080;
+        font-weight: bold;
+    }
+
+    table {
+        margin: auto;
+        border-collapse: collapse;
+        width: 70%;
+        background: #ffffff;
+        box-shadow: 0 0 12px rgba(0,0,0,0.2);
+    }
+
+    th {
+        background-color: #6200ff;
+        color: white;
+        padding: 10px;
+        border: 2px solid #2e0075;
+        font-weight: bold;
+    }
+
+    td {
+        padding: 8px;
+        border: 1px solid #b0b0ff;
+    }
+
+    tr.highlight td {
+        background: #e5d1ff;
+        font-weight: bold;
+        font-style: italic;
+        border: 2px solid #6d00a5;
+    }
+
+    .btn {
+        margin-top: 20px;
+        background: #6f00ff;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: #3c0075;
+    }
+</style>
+</head>
+
+<body>
+    <h1>📈 Simulação de Investimento - Christian</h1>
+    <table id="tabela">
+        <tr>
+            <th>Ano</th>
+            <th>Valor Investido (R$)</th>
+            <th>Rendimento Acumulado (R$)</th>
+        </tr>
+    </table>
+
+    <button class="btn" onclick="gerarTabela()">Gerar Simulação</button>
+
+    <canvas id="grafico" width="800" height="400"></canvas>
+
+<script>
+function gerarTabela() {
+    const tabela = document.getElementById("tabela");
+
+    let investimentoMensal = 100;
+    let rendimento = 0.08;
+    let total = 0;
+
+    tabela.innerHTML = `
+        <tr>
+            <th>Ano</th>
+            <th>Valor Investido (R$)</th>
+            <th>Rendimento Acumulado (R$)</th>
+        </tr>
+    `;
+
+    const dadosGrafico = [];
+
+    for (let ano = 1; ano <= 10; ano++) {
+        total = (total + investimentoMensal * 12) * (1 + rendimento);
+
+        let linha = tabela.insertRow();
+        linha.innerHTML = `
+            <td>${ano}</td>
+            <td>R$ ${(investimentoMensal * 12 * ano).toFixed(2)}</td>
+            <td>R$ ${total.toFixed(2)}</td>
+        `;
+
+        if (ano === 1 || ano === 5 || ano === 10) {
+            linha.classList.add("highlight");
+        }
+
+        dadosGrafico.push({ano, total});
+    }
+
+    gerarGrafico(dadosGrafico);
+}
+
+function gerarGrafico(dados) {
+    const ctx = document.getElementById("grafico").getContext("2d");
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: dados.map(d => d.ano),
+            datasets: [{
+                label: "Crescimento da Reserva (R$)",
+                data: dados.map(d => d.total),
+                borderWidth: 3,
+                borderColor: '#6100ff',
+                backgroundColor: 'rgba(104, 0, 255, 0.2)',
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: false }
+            }
+        }
+    });
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
